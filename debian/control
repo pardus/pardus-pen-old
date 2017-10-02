@@ -8,6 +8,6 @@ Homepage: http://pardus.org.tr
 
 Package: eta-pen
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5svg5
 Description: ETAP Sanal Kalem
  Ekrana çizim yapmak için rahat kullanımlı, hızlı bir araç.
