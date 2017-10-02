@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Eta-pen
+Name[tr]=Eta-Kalem
+Type=Application
+Comment=Screen Drawing Tool
+Comment[tr]=Ekran Çizim Aracı
+Terminal=false
+Exec=/usr/bin/eta-pen
+Icon=zim
+Categories=Qt;Utility;
+GenericName=Screen Drawing Tool
+GenericName[tr]=Ekran Çizim Aracı

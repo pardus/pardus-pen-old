@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/clear.svg</file>
+        <file>images/close.svg</file>
+        <file>images/etapen.svg</file>
+        <file>images/etapen_mode.svg</file>
+        <file>images/screen.svg</file>
+        <file>images/eraser.svg</file>
+        <file>images/eraser_selected.svg</file>
+        <file>images/eraser_cursor.svg</file>
+    </qresource>
+</RCC>

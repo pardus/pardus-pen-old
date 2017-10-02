@@ -1,0 +1,13 @@
+Source: eta-pen
+Section: utils
+Priority: optional
+Maintainer: Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>
+Build-Depends: debhelper (>= 9), libc6, libgcc1, libgl1-mesa-glx | libgl1, libqt5core5a, libqt5gui5, libqt5network5, libqt5widgets5, libstdc++6
+Standards-Version: 3.9.6
+Homepage: http://pardus.org.tr
+
+Package: eta-pen
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: ETAP Sanal Kalem
+ Ekrana çizim yapmak için rahat kullanımlı, hızlı bir araç.
