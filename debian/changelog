@@ -1,3 +1,9 @@
+eta-pen (0.2.1) unstable; urgency=medium
+
+  * Add libqt5svg5 to binary package depends
+
+ -- Yunusemre Şentürk <yunusemre.senturk@pardus.org.tr>  Mon, 02 Oct 2017 15:08:52 +0300
+
 eta-pen (0.2.0) unstable; urgency=medium
 
   * Initial release.
