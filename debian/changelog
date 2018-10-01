@@ -1,3 +1,9 @@
+eta-pen (0.2.4) unstable; urgency=medium
+
+  * Update control file
+
+ -- Hikmet Baş <hikmet.bas@pardus.org.tr>  Mon, 01 Oct 2018 14:25:47 +0000
+
 eta-pen (0.2.3) unstable; urgency=medium
 
   * Add anti aliasing, pensize, and erase size features.
