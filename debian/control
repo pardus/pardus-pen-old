@@ -2,7 +2,7 @@ Source: eta-pen
 Section: utils
 Priority: optional
 Maintainer: Hikmet Baş <hikmet.bas@pardus.org.tr>
-Build-Depends: debhelper (>= 9), libc6, libgcc1, libgl1-mesa-glx | libgl1, libqt5core5a, libqt5gui5, libqt5network5, libqt5widgets5, libstdc++6
+Build-Depends: debhelper (>= 9), qtbase5-dev
 Standards-Version: 3.9.6
 Homepage: http://pardus.org.tr
 
