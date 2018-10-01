@@ -10,12 +10,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100"
-   height="100"
+   width="160"
+   height="160"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="Yeni belge 1">
+   inkscape:version="0.92.1 r15371"
+   sodipodi:docname="eraser_cursor.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -34,16 +34,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6568542"
-     inkscape:cx="29.284414"
-     inkscape:cy="44.389668"
+     inkscape:zoom="0.99999999"
+     inkscape:cx="-13.885883"
+     inkscape:cy="-93.629439"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1168"
-     inkscape:window-x="1915"
-     inkscape:window-y="7"
+     inkscape:window-height="1136"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -61,16 +61,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-952.36218)">
-    <path
-       sodipodi:type="arc"
-       style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:#000000;stroke-width:2.61392951;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-dasharray:10.45571842, 10.45571842;stroke-dashoffset:0"
+     transform="translate(0,-892.36218)">
+    <circle
+       style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke:#000000;stroke-width:5.06244755;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:20.24979289, 20.24979289;stroke-dashoffset:0;stroke-opacity:1"
        id="path2985"
-       sodipodi:cx="-87"
-       sodipodi:cy="-13"
-       sodipodi:rx="40"
-       sodipodi:ry="40"
-       d="m -47,-13 a 40,40 0 1 1 -80,0 40,40 0 1 1 80,0 z"
-       transform="matrix(1.2104496,0,0,1.2104496,155.30911,1018.098)" />
+       cx="79.999992"
+       cy="972.36212"
+       r="77.468773" />
   </g>
 </svg>

@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QMainWindow>
 
+
 class QColor;
 class QPoint;
 class QImage;
@@ -34,6 +35,9 @@ class QPalette;
 class QVBoxLayout;
 class QGroupBox;
 class QPropertyAnimation;
+class QSlider;
+class QLabel;
+class QPixmap;
 
 
 
@@ -50,6 +54,7 @@ public slots:
     void penColor();
     void switchScreen();
     void toggleClearMode();
+    void penSize(const int &size);
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -63,14 +68,15 @@ private:
     void drawLineTo(const QPoint &endPoint);
     void resizeImage(QImage *image, const QSize &newSize);
     void setPenColor(const QColor &newColor);
-
+    void setPenSize(int size);
     void updateButtons();
-
 
     bool drawing;
     bool switched;
     bool clearMode;
 
+    int previousEraserLevel;
+    int previousPenLevel;
     int myPenWidth;
     QImage image;
     QColor myPenColor;
@@ -87,6 +93,9 @@ private:
     QRect mainScreenSize;
     QRect currentGeometry;
     QPropertyAnimation *animate;
+    QSlider *penSizeSelector;
+    QLabel *thickness;
+
 };
 
 #endif // MAINWINDOW_H

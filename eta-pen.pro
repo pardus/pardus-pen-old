@@ -2,7 +2,6 @@ QT       += core gui widgets network
 
 RESOURCES += images.qrc
 
-
 TARGET = eta-pen
 TEMPLATE = app
 
@@ -23,3 +22,6 @@ icon.commands = mkdir -p /usr/share/eta/eta-pen
 icon.path = /usr/share/eta/eta-pen/
 
 INSTALLS += target desktop_file icon
+
+DISTFILES += \
+    sliderstyle.qss

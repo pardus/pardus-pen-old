@@ -36,6 +36,9 @@
 #include <QRegion>
 #include <QVBoxLayout>
 #include <QtWidgets>
+#include <QSlider>
+#include <QLabel>
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -47,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     innerWidget = new QWidget(this);
-
     verticalLayout = new QVBoxLayout(innerWidget);
 
     QDesktopWidget widget;
@@ -55,7 +57,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     setGeometry(mainScreenSize);
     drawing = false;
-    myPenWidth = 5;
+
+    previousPenLevel = 4;
+    previousEraserLevel = 4;
+
+    myPenWidth = previousPenLevel * 2 - 1;
 
     myPenColor = QColor(255,108,0);
 
@@ -66,7 +72,40 @@ MainWindow::MainWindow(QWidget *parent)
     closeButton = new QPushButton(this);
     colorButton = new QPushButton(this);
     switchButton = new QPushButton(this);
+    penSizeSelector = new QSlider(Qt::Vertical, this);
+    thickness = new QLabel(this);
 
+    colorButton->setStyleSheet("background:rgb(255,108,0);"
+                               "border-radius:7px;"
+                               "color:rgb(255,108,0);");
+
+    thickness->setText("Kalınlık\n" + QString::number(myPenWidth));
+    QFont f( "Helvetica", 10, QFont::Bold);
+    thickness->setFont(f);
+    thickness->setAlignment(Qt::AlignCenter);
+    thickness->setStyleSheet("background:rgba(242,242,242,95);"
+                             "border-radius:7px;"
+                             "color:rgb(255,108,0);");
+
+    penSizeSelector->setMinimum(2);
+    penSizeSelector->setMaximum(8);
+    penSizeSelector->setSliderPosition(4);
+
+    penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
+                                       "background: rgba(242, 242, 242, 95);"
+                                       "border-radius: 3px;"
+                                       "width: 20px;"
+                                   "}"
+
+                                   ".QSlider::handle:vertical {"
+                                       "background: rgba(242, 242, 242, 95);"
+
+                                       "border: 2px solid rgb(255,108,0);"
+                                       "width: 30px;"
+                                       "height: 40px;"
+                                       "border-radius: 6px;"
+                                       "margin: 0 -15px 0 -15px;"
+                                   "}");
     clearButton->setFlat(true);
     closeButton->setFlat(true);
     colorButton->setFlat(true);
@@ -83,19 +122,21 @@ MainWindow::MainWindow(QWidget *parent)
     closeButton->setIconSize(QSize(50,50));
     switchButton->setIconSize(QSize(50,50));
     colorButton->setFixedSize(QSize(50,50));
-
+    penSizeSelector->setFixedSize(QSize(50,150));
+    thickness->setFixedSize(QSize(50,50));
 
     palette = new QPalette();
     palette->setColor(QPalette::Button, myPenColor);
     colorButton->setPalette(*palette);
     colorButton->setAutoFillBackground(true);
 
-
     currentGeometry = this->geometry();
 
     groupBox = new QGroupBox(this);
 
     verticalLayout->addWidget(colorButton);
+    verticalLayout->addWidget(thickness);
+    verticalLayout->addWidget(penSizeSelector);
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
     verticalLayout->addWidget(switchButton);
@@ -103,16 +144,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     groupBox->setLayout(verticalLayout);
 
-
-
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
+    connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
     connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
     connect(colorButton,SIGNAL(clicked()),this,SLOT(penColor()));
     connect(switchButton,SIGNAL(clicked()),this,SLOT(switchScreen()));
-    switched = true;    
-    this->updateButtons();
 
+    switched = true;
+    this->updateButtons();
     this->setCursor(Qt::BlankCursor);
 }
 
@@ -124,12 +164,12 @@ void MainWindow::updateButtons()
 {
     if(switched) {        
         groupBox->setGeometry(QRect( currentGeometry.width() - 75,
-                                    currentGeometry.height() / 2 - 155,
-                                    75, 310));
+                                    currentGeometry.height() / 2 - 280,
+                                    75, 560));
         switchButton->setIcon(QIcon(":images/screen.svg"));
     } else {        
 
-        groupBox->setGeometry(QRect(0, 0, 75, 310));
+        groupBox->setGeometry(QRect(0, 0, 75, 560));
 
         switchButton->setIcon(QIcon(":images/etapen_mode.svg"));
     }
@@ -192,6 +232,7 @@ void MainWindow::drawLineTo(const QPoint &endPoint)
 
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.drawLine(lastPoint, endPoint);
 
     int rad = (myPenWidth / 2) + 2;
@@ -216,8 +257,44 @@ void MainWindow::setPenColor(const QColor &newColor)
 {
     myPenColor = newColor;
     palette->setColor(QPalette::Button, myPenColor);
-    colorButton->setPalette(*palette);
-    colorButton->update();
+    thickness->setStyleSheet("background:rgba(242,242,242,95);"
+                             "border-radius:7px;"
+                             "color:"+newColor.name()+";");
+    colorButton->setStyleSheet("background:"+newColor.name()+";"
+                               "border-radius:7px;");
+    penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
+                                       "background: rgba(242, 242, 242, 95);"
+                                       "border-radius: 3px;"
+                                       "width: 20px;"
+                                   "}"
+
+                                   ".QSlider::handle:vertical {"
+                                       "background: rgba(242, 242, 242, 95);"
+                                       "border: 2px solid "+newColor.name()+";"
+                                       "width: 30px;"
+                                       "height: 40px;"
+                                       "border-radius: 6px;"
+                                       "margin: 0 -15px 0 -15px;"
+                                   "}");
+}
+
+void MainWindow::setPenSize(int size)
+{
+    if (clearMode) {
+        int t = size * 20;
+        this->myPenWidth = t;
+        thickness->setText("Kalınlık\n" + QString::number(t));
+        this->setCursor(QCursor(QPixmap(":images/eraser_cursor.svg").
+                                scaled(myPenWidth,myPenWidth,
+                                                    Qt::KeepAspectRatio,
+                                                    Qt::SmoothTransformation),
+                                myPenWidth/2,myPenWidth/2));
+    } else {
+        int t = size * 2 - 1;
+        this->myPenWidth = t;
+        thickness->setText("Kalınlık\n" + QString::number(t));
+    }
+
 }
 
 void MainWindow::penColor()
@@ -227,12 +304,17 @@ void MainWindow::penColor()
         setPenColor(newColor);
 }
 
+void MainWindow::penSize(const int &size)
+{
+    setPenSize(size);
+}
+
 void MainWindow::switchScreen()
 {
     if(switched) {
         this->setGeometry(mainScreenSize.x() + currentGeometry.width() -75,
-                          mainScreenSize.y() + currentGeometry.height()/2 -155,
-                          75,310);
+                          mainScreenSize.y() + currentGeometry.height()/2 -280,
+                          75,560);
         this->updateButtons();
         switched = false;
     } else {
@@ -260,16 +342,23 @@ void MainWindow::toggleClearMode()
 {
     if(clearMode) {
         clearMode = false;
-        myPenWidth = 5;
+        previousEraserLevel = penSizeSelector->value();
+        penSizeSelector->setValue(previousPenLevel);
+        setPenSize(previousPenLevel);
         this->setCursor(Qt::BlankCursor);
         eraseButton->setIcon(QIcon(":images/eraser.svg"));
         eraseButton->setChecked(false);
     } else {
         clearMode = true;
-        myPenWidth = 100;
-        this->setCursor(QCursor(QPixmap(":images/eraser_cursor.svg"),50,50));
+        previousPenLevel = penSizeSelector->value();
+        penSizeSelector->setValue(previousEraserLevel);
+        setPenSize(previousEraserLevel);
+        this->setCursor(QCursor(QPixmap(":images/eraser_cursor.svg").
+                                scaled(myPenWidth,myPenWidth,
+                                                    Qt::KeepAspectRatio,
+                                                    Qt::SmoothTransformation),
+                                myPenWidth/2,myPenWidth/2));
         eraseButton->setIcon(QIcon(":images/eraser_selected.svg"));
         eraseButton->setChecked(true);
     }
-
 }
