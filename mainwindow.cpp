@@ -163,7 +163,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     switched = true;
     this->updateButtons();
-    //this->setCursor(Qt::BlankCursor);
+    this->setCursor(Qt::BlankCursor);
 }
 
 MainWindow::~MainWindow()
@@ -347,9 +347,17 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 
 void MainWindow::penColor()
 {
+    if(switched) {
+        switchScreen();
+    }
     QColor newColor = QColorDialog::getColor(myPenColor);
-    if (newColor.isValid())
+    if (newColor.isValid()) {
         setPenColor(newColor);
+        if(!switched) {
+            switchScreen();
+        }
+    }
+
 }
 
 void MainWindow::penSize(const int &size)
@@ -368,12 +376,12 @@ void MainWindow::switchScreen()
         this->setGeometry(mainScreenSize.x() + currentGeometry.width() -75,
                           mainScreenSize.y() + currentGeometry.height()/2 -310,
                           75,620);
-        this->updateButtons();
         switched = false;
+        this->updateButtons();
     } else {
         this->setGeometry(mainScreenSize);
-        this->updateButtons();
         switched = true;
+        this->updateButtons();
     }
     if(clearMode) {
         toggleClearMode();
