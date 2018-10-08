@@ -1,3 +1,9 @@
+eta-pen (0.2.7) unstable; urgency=medium
+
+  * Fix color selection error
+
+ -- Hikmet Baş <hikmet.bas@pardus.org.tr>  Mon, 08 Oct 2018 11:22:05 +0000
+
 eta-pen (0.2.6) unstable; urgency=medium
 
   * Add paper mode
