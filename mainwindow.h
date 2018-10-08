@@ -55,6 +55,7 @@ public slots:
     void switchScreen();
     void toggleClearMode();
     void penSize(const int &size);
+    void togglePaperMode();
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -70,15 +71,20 @@ private:
     void setPenColor(const QColor &newColor);
     void setPenSize(int size);
     void updateButtons();
+    void setPaperMode(QImage *myimage, QImage *mypreviousImage);
+    void saveImage(QImage *image);
 
     bool drawing;
     bool switched;
     bool clearMode;
+    bool paperMode;
 
     int previousEraserLevel;
     int previousPenLevel;
     int myPenWidth;
     QImage image;
+    QImage previousImage;
+    QImage paper;
     QColor myPenColor;
     QPoint lastPoint;
     QWidget *innerWidget;
@@ -89,6 +95,7 @@ private:
     QPushButton *closeButton;
     QPushButton *colorButton;
     QPushButton *switchButton;
+    QPushButton *paperButton;
     QPalette *palette;
     QRect mainScreenSize;
     QRect currentGeometry;
