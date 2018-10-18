@@ -152,6 +152,7 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(closeButton);
 
     groupBox->setLayout(verticalLayout);
+    groupBox->setStyleSheet("background:rgb(56,56,56);");
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
