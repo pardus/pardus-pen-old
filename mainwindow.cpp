@@ -44,10 +44,12 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       clearMode(false),
-      paperMode(false)
+      paperMode(false),
+      drawing(false)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
                    | Qt::X11BypassWindowManagerHint);
+
     setAttribute(Qt::WA_StaticContents);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
@@ -58,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
     mainScreenSize = widget.availableGeometry(widget.primaryScreen());
 
     setGeometry(mainScreenSize);
-    drawing = false;
 
     previousPenLevel = 4;
     previousEraserLevel = 4;
@@ -181,7 +182,6 @@ void MainWindow::updateButtons()
     } else {
 
         groupBox->setGeometry(QRect(0, 0, 75, 620));
-
         switchButton->setIcon(QIcon(":images/etapen_mode.svg"));
     }
 
@@ -194,7 +194,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         lastPoint = event->pos();
         drawing = true;
     }
-
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
@@ -291,11 +290,11 @@ void MainWindow::setPenColor(const QColor &newColor)
                                    ".QSlider::handle:vertical {"
                                    "background: rgba(242, 242, 242, 95);"
                                    "border: 2px solid "+newColor.name()+";"
-                                   "width: 30px;"
-                                   "height: 40px;"
-                                   "border-radius: 3px;"
-                                   "margin: 0 -15px 0 -15px;"
-                                   "}");
+                                                     "width: 30px;"
+                                                     "height: 40px;"
+                                                     "border-radius: 3px;"
+                                                     "margin: 0 -15px 0 -15px;"
+                                                                        "}");
 }
 
 void MainWindow::setPenSize(int size)
@@ -354,9 +353,10 @@ void MainWindow::penColor()
     QColor newColor = QColorDialog::getColor(myPenColor);
     if (newColor.isValid()) {
         setPenColor(newColor);
-        if(!switched) {
-            switchScreen();
-        }
+    }
+
+    if(!switched) {
+        switchScreen();
     }
 
 }
@@ -368,11 +368,20 @@ void MainWindow::penSize(const int &size)
 
 void MainWindow::togglePaperMode()
 {
+    if(!switched) {
+        switchScreen();
+    }
     setPaperMode(&image, &previousImage);
 }
 
 void MainWindow::switchScreen()
 {
+
+    if(clearMode) {
+        toggleClearMode();
+        clearButton->setChecked(false);
+    }
+
     if(switched) {
         this->setGeometry(mainScreenSize.x() + currentGeometry.width() -75,
                           mainScreenSize.y() + currentGeometry.height()/2 -310,
@@ -383,10 +392,6 @@ void MainWindow::switchScreen()
         this->setGeometry(mainScreenSize);
         switched = true;
         this->updateButtons();
-    }
-    if(clearMode) {
-        toggleClearMode();
-        clearButton->setChecked(false);
     }
 }
 
@@ -406,6 +411,9 @@ void MainWindow::clearImage()
 
 void MainWindow::toggleClearMode()
 {
+    if(!switched) {
+        switchScreen();
+    }
     if(clearMode) {
         clearMode = false;
         previousEraserLevel = penSizeSelector->value();
