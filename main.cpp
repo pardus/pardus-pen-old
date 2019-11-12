@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     //a.setOverrideCursor(QCursor(Qt::BlankCursor));
     QApplication::setWindowIcon( QIcon(ICONPATH) );
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QString name = SINGLE_INSTANCE;
 
     SingleInstance cInstance;

@@ -39,6 +39,7 @@
 #include <QSlider>
 #include <QLabel>
 
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -60,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainScreenSize = widget.availableGeometry(widget.primaryScreen());
 
     setGeometry(mainScreenSize);
+
 
     previousPenLevel = 4;
     previousEraserLevel = 4;
@@ -85,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
                                "border-radius:3px;"
                                "color:rgb(255,108,0);");
 
-    thickness->setText("Kalınlık\n" + QString::number(myPenWidth));
+    thickness->setText(QString::number(myPenWidth));
     QFont f( "Helvetica", 10, QFont::Bold);
     thickness->setFont(f);
     thickness->setAlignment(Qt::AlignCenter);
@@ -119,27 +121,29 @@ MainWindow::MainWindow(QWidget *parent)
     eraseButton->setFlat(true);
     paperButton->setFlat(true);
 
+    currentGeometry = this->geometry();
+
     eraseButton->setCheckable(true);
     eraseButton->setIcon(QIcon(":images/eraser.svg"));
     clearButton->setIcon(QIcon(":images/wipe.svg"));
     closeButton->setIcon(QIcon(":images/close.svg"));
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
-    eraseButton->setIconSize(QSize(50,50));
-    clearButton->setIconSize(QSize(50,50));
-    closeButton->setIconSize(QSize(50,50));
-    switchButton->setIconSize(QSize(50,50));
-    paperButton->setIconSize(QSize(50,50));
-    colorButton->setFixedSize(QSize(50,50));
-    penSizeSelector->setFixedSize(QSize(50,150));
-    thickness->setFixedSize(QSize(50,50));
+    eraseButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    clearButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    closeButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    switchButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    paperButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    colorButton->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    penSizeSelector->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*8.15/100)));
+    thickness->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
 
     palette = new QPalette();
     palette->setColor(QPalette::Button, myPenColor);
     colorButton->setPalette(*palette);
     colorButton->setAutoFillBackground(true);
 
-    currentGeometry = this->geometry();
+
 
     groupBox = new QGroupBox(this);
 
@@ -175,13 +179,12 @@ MainWindow::~MainWindow()
 void MainWindow::updateButtons()
 {
     if(switched) {
-        groupBox->setGeometry(QRect( currentGeometry.width() - 75,
-                                     currentGeometry.height() / 2 - 310,
-                                     75, 620));
+        groupBox->setGeometry(QRect( int(mainScreenSize.width()*96.20/100),
+                                     mainScreenSize.height() / 2 - 310,
+                                     int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
         switchButton->setIcon(QIcon(":images/screen.svg"));
     } else {
-
-        groupBox->setGeometry(QRect(0, 0, 75, 620));
+        groupBox->setGeometry(QRect(0, 0, int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
         switchButton->setIcon(QIcon(":images/etapen_mode.svg"));
     }
 
@@ -302,7 +305,7 @@ void MainWindow::setPenSize(int size)
     if (clearMode) {
         int t = size * 20;
         this->myPenWidth = t;
-        thickness->setText("Kalınlık\n" + QString::number(t));
+        thickness->setText(QString::number(t));
         this->setCursor(QCursor(QPixmap(":images/eraser_cursor.svg").
                                 scaled(myPenWidth,myPenWidth,
                                        Qt::KeepAspectRatio,
@@ -311,7 +314,7 @@ void MainWindow::setPenSize(int size)
     } else {
         int t = size * 2 - 1;
         this->myPenWidth = t;
-        thickness->setText("Kalınlık\n" + QString::number(t));
+        thickness->setText(QString::number(t));
     }
 
 }
@@ -383,9 +386,9 @@ void MainWindow::switchScreen()
     }
 
     if(switched) {
-        this->setGeometry(mainScreenSize.x() + currentGeometry.width() -75,
-                          mainScreenSize.y() + currentGeometry.height()/2 -310,
-                          75,620);
+        this->setGeometry(mainScreenSize.x() + currentGeometry.width() - int(mainScreenSize.width()*3.805/100),
+                          mainScreenSize.y() + currentGeometry.height()/2 - 310,
+                          int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100));
         switched = false;
         this->updateButtons();
     } else {
