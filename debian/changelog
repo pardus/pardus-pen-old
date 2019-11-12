@@ -1,3 +1,9 @@
+eta-pen (0.2.11) unstable; urgency=medium
+
+  * Fix high dpi issues
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 12 Nov 2019 15:08:29 +0300
+
 eta-pen (0.2.10) unstable; urgency=medium
 
   * Change desktop icon
