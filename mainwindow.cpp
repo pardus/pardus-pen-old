@@ -353,7 +353,7 @@ void MainWindow::penColor()
     if(switched) {
         switchScreen();
     }
-    QColor newColor = QColorDialog::getColor(myPenColor);
+    QColor newColor = QColorDialog::getColor(myPenColor, nullptr, "Renk Seçiniz", QColorDialog::DontUseNativeDialog);
     if (newColor.isValid()) {
         setPenColor(newColor);
     }
