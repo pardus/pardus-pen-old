@@ -147,6 +147,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     groupBox = new QGroupBox(this);
 
+    verticalLayout->addWidget(closeButton);
     verticalLayout->addWidget(colorButton);
     verticalLayout->addWidget(thickness);
     verticalLayout->addWidget(penSizeSelector);
@@ -154,7 +155,6 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(clearButton);
     verticalLayout->addWidget(paperButton);
     verticalLayout->addWidget(switchButton);
-    verticalLayout->addWidget(closeButton);
 
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("background:rgb(56,56,56);");
