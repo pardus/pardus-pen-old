@@ -38,7 +38,7 @@
 #include <QtWidgets>
 #include <QSlider>
 #include <QLabel>
-
+#include <QProcess>
 
 #include "mainwindow.h"
 
@@ -48,6 +48,16 @@ MainWindow::MainWindow(QWidget *parent)
       paperMode(false),
       drawing(false)
 {
+    QStringList args1;
+    QProcess p1;
+    args1 << "-e" << "eta-disable-gestures@pardus.org.tr";
+    p1.execute("gnome-shell-extension-tool", args1);
+
+    QStringList args2;
+    QProcess p2;
+    args2 << "set" << "org.gnome.mutter" << "overlay-key" << "''";
+    p2.execute("gsettings", args2);
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
                    | Qt::X11BypassWindowManagerHint);
 
@@ -58,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout = new QVBoxLayout(innerWidget);
 
     QDesktopWidget widget;
-    mainScreenSize = widget.availableGeometry(widget.primaryScreen());
+    mainScreenSize = widget.screenGeometry(widget.primaryScreen());
 
     setGeometry(mainScreenSize);
 
@@ -174,7 +184,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    QStringList args3;
+    QProcess p3;
+    args3 << "-d" << "eta-disable-gestures@pardus.org.tr";
+    p3.execute("gnome-shell-extension-tool", args3);
 
+    QStringList args4;
+    QProcess p4;
+    args4 << "set" << "org.gnome.mutter" << "overlay-key" << "'SUPER_L'";
+    p4.execute("gsettings", args4);
 }
 void MainWindow::updateButtons()
 {
