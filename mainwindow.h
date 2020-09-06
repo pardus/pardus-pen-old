@@ -88,20 +88,27 @@ private:
     QColor myPenColor;
     QPoint lastPoint;
     QWidget *innerWidget;
+    QWidget *leftInnerWidget;
     QVBoxLayout *verticalLayout;
+    QVBoxLayout *leftVerticalLayout;
     QGroupBox *groupBox;
+    QGroupBox *leftGroupBox;
     QPushButton *clearButton;
     QPushButton *eraseButton;
     QPushButton *closeButton;
     QPushButton *colorButton;
     QPushButton *switchButton;
     QPushButton *paperButton;
+    QPushButton *pardusButton;
+    QPushButton *etapButton;
     QPalette *palette;
+    QRect avaibleScreenSize;
     QRect mainScreenSize;
     QRect currentGeometry;
     QPropertyAnimation *animate;
     QSlider *penSizeSelector;
     QLabel *thickness;
+    QLabel *leftTextLabel;
 
 };
 

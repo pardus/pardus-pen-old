@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QDesktopWidget widget;
     mainScreenSize = widget.screenGeometry(widget.primaryScreen());
+    avaibleScreenSize = widget.availableGeometry(widget.primaryScreen());
 
     setGeometry(mainScreenSize);
 
@@ -169,6 +170,32 @@ MainWindow::MainWindow(QWidget *parent)
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("background:rgb(56,56,56);");
 
+
+    leftInnerWidget = new QWidget(this);
+    leftVerticalLayout = new QVBoxLayout(leftInnerWidget);
+
+    leftTextLabel = new QLabel(this);
+    leftTextLabel->setText("P\nA\nR\nD\nU\nS\n\nE\nT\nA\nP");
+    leftTextLabel->setAlignment(Qt::AlignCenter);
+    leftTextLabel->setStyleSheet("color:white;font-size:35px;");
+    leftTextLabel->setFont(f);
+    pardusButton = new QPushButton(this);
+    pardusButton->setFlat(true);
+    pardusButton->setIcon(QIcon(":images/parduslogo.png"));
+    pardusButton->setIconSize(QSize(int(mainScreenSize.width()-avaibleScreenSize.width()),int(mainScreenSize.width()-avaibleScreenSize.width())));
+    etapButton = new QPushButton(this);
+    etapButton->setFlat(true);
+    etapButton->setIcon(QIcon(":images/etaplogo.png"));
+    etapButton->setIconSize(QSize(int(mainScreenSize.width()-avaibleScreenSize.width()-(mainScreenSize.width()-avaibleScreenSize.width())/3.5),int(mainScreenSize.width()-avaibleScreenSize.width())));
+
+    leftVerticalLayout->addWidget(pardusButton);
+    leftVerticalLayout->addWidget(leftTextLabel);
+    leftVerticalLayout->addWidget(etapButton);
+
+    leftGroupBox = new QGroupBox(this);
+    leftGroupBox->setLayout(leftVerticalLayout);
+    leftGroupBox->setStyleSheet("background:rgb(56,56,56);");
+
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
@@ -198,12 +225,15 @@ void MainWindow::updateButtons()
 {
     if(switched) {
         groupBox->setGeometry(QRect( int(mainScreenSize.width()*96.20/100),
-                                     mainScreenSize.height() / 2 - 310,
+                                     mainScreenSize.height() / 2 - int(mainScreenSize.height()/2.4),
                                      int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
         switchButton->setIcon(QIcon(":images/screen.svg"));
+        leftGroupBox->setGeometry(QRect( 0,0, int(mainScreenSize.width() - avaibleScreenSize.width()),
+                                         int(mainScreenSize.height())));
     } else {
         groupBox->setGeometry(QRect(0, 0, int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
         switchButton->setIcon(QIcon(":images/etapen_mode.svg"));
+        leftGroupBox->setGeometry(QRect( 500,500, 0, 0));
     }
 
 }
@@ -301,7 +331,7 @@ void MainWindow::setPenColor(const QColor &newColor)
                              "border-radius:3px;"
                              "color:"+newColor.name()+";");
     colorButton->setStyleSheet("background:"+newColor.name()+";"
-                                                         "border-radius:3px;");
+                                                             "border-radius:3px;");
     penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
                                    "background: rgba(242, 242, 242, 95);"
                                    "border-radius: 2px;"
@@ -311,10 +341,10 @@ void MainWindow::setPenColor(const QColor &newColor)
                                    ".QSlider::handle:vertical {"
                                    "background: rgba(242, 242, 242, 95);"
                                    "border: 2px solid "+newColor.name()+";"
-                                                     "width: 30px;"
-                                                     "height: 40px;"
-                                                     "border-radius: 3px;"
-                                                     "margin: 0 -15px 0 -15px;"
+                                                                        "width: 30px;"
+                                                                        "height: 40px;"
+                                                                        "border-radius: 3px;"
+                                                                        "margin: 0 -15px 0 -15px;"
                                                                         "}");
 }
 
@@ -405,7 +435,7 @@ void MainWindow::switchScreen()
 
     if(switched) {
         this->setGeometry(mainScreenSize.x() + currentGeometry.width() - int(mainScreenSize.width()*3.805/100),
-                          mainScreenSize.y() + currentGeometry.height()/2 - 310,
+                          mainScreenSize.y() + currentGeometry.height()/2 - int(mainScreenSize.height()/2.4),
                           int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100));
         switched = false;
         this->updateButtons();
