@@ -1,3 +1,13 @@
+eta-pen (0.3.0) unstable; urgency=medium
+
+  * Fix GTK ColorDialog problem
+  * Update position of close button to the top
+  * Add QProcess for control gestures and hotkey And Update mainScreenSize to screenGeometry
+  * Add pardus and etap logo
+  * Add leftGroupBox for closing to gnome dashtodock panel
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Mon, 07 Sep 2020 00:23:08 +0300
+
 eta-pen (0.2.11) unstable; urgency=medium
 
   * Fix high dpi issues
