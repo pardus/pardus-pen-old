@@ -1,3 +1,9 @@
+pardus-pen (1.0.0) unstable; urgency=medium
+
+  * Pardus ondokuz integration and fixes.
+
+ -- Ali Riza Keskin <ali.riza.keskin@pardus.org.tr>  Wed, 23 Dec 2020 14:01:24 +0000
+
 pardus-pen (0.3.0) unstable; urgency=medium
 
   * Fix GTK ColorDialog problem
