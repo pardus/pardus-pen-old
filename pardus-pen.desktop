@@ -1,13 +1,13 @@
 [Desktop Entry]
 Version=1.0
-Name=Eta-pen
-Name[tr]=Eta-Kalem
+Name=Pardus Pen
+Name[tr]=Pardus Kalem
 Type=Application
 Comment=Screen Drawing Tool
 Comment[tr]=Ekran Çizim Aracı
 Terminal=false
-Exec=/usr/bin/eta-pen
-Icon=/usr/share/eta/eta-pen/etapen.svg
-Categories=Qt;Utility;
+Exec=/usr/bin/pardus-pen
+Icon=/usr/share/pardus/pardus-pen/parduspen.svg
+Categories=Qt;Graphics;
 GenericName=Screen Drawing Tool
 GenericName[tr]=Ekran Çizim Aracı

@@ -1,4 +1,4 @@
-Source: eta-pen
+Source: pardus-pen
 Section: utils
 Priority: optional
 Maintainer: Hikmet Baş <hikmet.bas@pardus.org.tr>
@@ -6,8 +6,8 @@ Build-Depends: debhelper (>= 9), qtbase5-dev
 Standards-Version: 3.9.6
 Homepage: http://pardus.org.tr
 
-Package: eta-pen
+Package: pardus-pen
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5svg5
-Description: ETAP Sanal Kalem
+Description: Pardus Sanal Kalem
  Ekrana çizim yapmak için rahat kullanımlı, hızlı bir araç.

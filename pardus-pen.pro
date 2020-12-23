@@ -2,7 +2,7 @@ QT       += core gui widgets network
 
 RESOURCES += images.qrc
 
-TARGET = eta-pen
+TARGET = pardus-pen
 TEMPLATE = app
 
 SOURCES += main.cpp\
@@ -14,12 +14,12 @@ HEADERS  += mainwindow.h\
 
 target.path = /usr/bin/
 
-desktop_file.files = eta-pen.desktop
+desktop_file.files = pardus-pen.desktop
 desktop_file.path = /usr/share/applications/
 
-icon.files = images/etapen.svg
-icon.commands = mkdir -p /usr/share/eta/eta-pen
-icon.path = /usr/share/eta/eta-pen/
+icon.files = images/parduspen.svg
+icon.commands = mkdir -p /usr/share/pardus/pardus-pen
+icon.path = /usr/share/pardus/pardus-pen
 
 INSTALLS += target desktop_file icon
 

@@ -10,7 +10,7 @@
  *   This program is distributed in the hope that it will be useful,         *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
- *   GNU General Public License for more details.                            *
+ *   GNU General Public License for more dpardusils.                            *
  *                                                                           *
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program; if not, write to the                           *
@@ -22,8 +22,8 @@
 #include "singleinstance.h"
 #include <QApplication>
 
-#define SINGLE_INSTANCE ".etapen"
-#define ICONPATH "/usr/share/eta/eta-pen/etapen.svg"
+#define SINGLE_INSTANCE ".parduspen"
+#define ICONPATH "/usr/share/pardus/pardus-pen/parduspen.svg"
 
 int main(int argc, char *argv[])
 {
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     SingleInstance cInstance;
     if(cInstance.hasPrevious(name, QCoreApplication::arguments()))
     {
-        qDebug() << "eta-pen is allready open";
+        qDebug() << "pardus-pen is allready open";
         return 0;
     }
     if (cInstance.listen(name)) {

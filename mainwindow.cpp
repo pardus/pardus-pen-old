@@ -10,7 +10,7 @@
  *   This program is distributed in the hope that it will be useful,         *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of          *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
- *   GNU General Public License for more details.                            *
+ *   GNU General Public License for more dpardusils.                            *
  *                                                                           *
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program; if not, write to the                           *
@@ -42,22 +42,14 @@
 
 #include "mainwindow.h"
 
+int hudsize=100;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       clearMode(false),
       paperMode(false),
       drawing(false)
 {
-    QStringList args1;
-    QProcess p1;
-    args1 << "-e" << "eta-disable-gestures@pardus.org.tr";
-    p1.execute("gnome-shell-extension-tool", args1);
-
-    QStringList args2;
-    QProcess p2;
-    args2 << "set" << "org.gnome.mutter" << "overlay-key" << "''";
-    p2.execute("gsettings", args2);
-
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
                    | Qt::X11BypassWindowManagerHint);
 
@@ -66,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     innerWidget = new QWidget(this);
     verticalLayout = new QVBoxLayout(innerWidget);
+    verticalLayout->setAlignment(Qt::AlignCenter);
 
     QDesktopWidget widget;
     mainScreenSize = widget.screenGeometry(widget.primaryScreen());
@@ -73,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setGeometry(mainScreenSize);
 
+    hudsize=mainScreenSize.height()/13;
 
     previousPenLevel = 4;
     previousEraserLevel = 4;
@@ -96,28 +90,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     colorButton->setStyleSheet("background:rgb(255,108,0);"
                                "border-radius:3px;"
+                               "border: 2px solid rgb(171,171,171);"
                                "color:rgb(255,108,0);");
 
     thickness->setText(QString::number(myPenWidth));
-    QFont f( "Helvetica", 10, QFont::Bold);
+    QFont f( "Helvetica", hudsize/5, QFont::Bold);
     thickness->setFont(f);
     thickness->setAlignment(Qt::AlignCenter);
-    thickness->setStyleSheet("background:rgba(242,242,242,95);"
+    thickness->setStyleSheet("background:rgba(242,242,242,54);"
                              "border-radius:3px;"
+                             "border: 2px solid rgb(171, 171, 171);"
                              "color:rgb(255,108,0);");
 
-    penSizeSelector->setMinimum(2);
-    penSizeSelector->setMaximum(8);
-    penSizeSelector->setSliderPosition(4);
+    penSizeSelector->setMinimum(1);
+    penSizeSelector->setMaximum(31);
+    penSizeSelector->setSliderPosition(2);
 
     penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
-                                   "background: rgba(242, 242, 242, 95);"
+                                   "background: rgba(242, 242, 242,64);"
                                    "border-radius: 2px;"
+                                   "border: 2px solid rgb(171,171,171);"
                                    "width: 20px;"
                                    "}"
 
                                    ".QSlider::handle:vertical {"
-                                   "background: rgba(242, 242, 242, 95);"
+                                   "background: rgb(242, 242, 242);"
 
                                    "border: 2px solid rgb(255,108,0);"
                                    "width: 30px;"
@@ -125,12 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
                                    "border-radius: 3px;"
                                    "margin: 0 -15px 0 -15px;"
                                    "}");
-    clearButton->setFlat(true);
-    closeButton->setFlat(true);
-    colorButton->setFlat(true);
-    switchButton->setFlat(true);
-    eraseButton->setFlat(true);
-    paperButton->setFlat(true);
+
 
     currentGeometry = this->geometry();
 
@@ -140,14 +132,15 @@ MainWindow::MainWindow(QWidget *parent)
     closeButton->setIcon(QIcon(":images/close.svg"));
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
-    eraseButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    clearButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    closeButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    switchButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    paperButton->setIconSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    colorButton->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
-    penSizeSelector->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*8.15/100)));
-    thickness->setFixedSize(QSize(int(mainScreenSize.width()*2.7144/100),int(mainScreenSize.width()*2.7144/100)));
+    eraseButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    clearButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    closeButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    switchButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    paperButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
+    penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
+    thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
+
 
     palette = new QPalette();
     palette->setColor(QPalette::Button, myPenColor);
@@ -158,43 +151,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     groupBox = new QGroupBox(this);
 
+   /* closeButton->setStyleSheet("border: 2px solid rgb(171,171,171);");
+    switchButton->setStyleSheet("border: 2px solid rgb(171,171,171);");
+    eraseButton->setStyleSheet("border: 2px solid rgb(171,171,171);");
+    clearButton->setStyleSheet("border: 2px solid rgb(171,171,171);");
+    paperButton->setStyleSheet("border: 2px solid rgb(171,171,171);");
+*/
+
     verticalLayout->addWidget(closeButton);
+    verticalLayout->addWidget(switchButton);
+    verticalLayout->addWidget(penSizeSelector);
     verticalLayout->addWidget(colorButton);
     verticalLayout->addWidget(thickness);
-    verticalLayout->addWidget(penSizeSelector);
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
     verticalLayout->addWidget(paperButton);
-    verticalLayout->addWidget(switchButton);
 
     groupBox->setLayout(verticalLayout);
-    groupBox->setStyleSheet("background:rgb(56,56,56);");
+    groupBox->setStyleSheet("border: None;");
 
 
-    leftInnerWidget = new QWidget(this);
-    leftVerticalLayout = new QVBoxLayout(leftInnerWidget);
-
-    leftTextLabel = new QLabel(this);
-    leftTextLabel->setText("P\nA\nR\nD\nU\nS\n\nE\nT\nA\nP");
-    leftTextLabel->setAlignment(Qt::AlignCenter);
-    leftTextLabel->setStyleSheet("color:white;font-size:35px;");
-    leftTextLabel->setFont(f);
-    pardusButton = new QPushButton(this);
-    pardusButton->setFlat(true);
-    pardusButton->setIcon(QIcon(":images/parduslogo.png"));
-    pardusButton->setIconSize(QSize(int(mainScreenSize.width()-avaibleScreenSize.width()),int(mainScreenSize.width()-avaibleScreenSize.width())));
-    etapButton = new QPushButton(this);
-    etapButton->setFlat(true);
-    etapButton->setIcon(QIcon(":images/etaplogo.png"));
-    etapButton->setIconSize(QSize(int(mainScreenSize.width()-avaibleScreenSize.width()-(mainScreenSize.width()-avaibleScreenSize.width())/3.5),int(mainScreenSize.width()-avaibleScreenSize.width())));
-
-    leftVerticalLayout->addWidget(pardusButton);
-    leftVerticalLayout->addWidget(leftTextLabel);
-    leftVerticalLayout->addWidget(etapButton);
-
-    leftGroupBox = new QGroupBox(this);
-    leftGroupBox->setLayout(leftVerticalLayout);
-    leftGroupBox->setStyleSheet("background:rgb(56,56,56);");
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
@@ -206,34 +182,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     switched = true;
     this->updateButtons();
-    this->setCursor(Qt::BlankCursor);
+    this->setCursor(QCursor());
 }
 
 MainWindow::~MainWindow()
 {
-    QStringList args3;
-    QProcess p3;
-    args3 << "-d" << "eta-disable-gestures@pardus.org.tr";
-    p3.execute("gnome-shell-extension-tool", args3);
-
-    QStringList args4;
-    QProcess p4;
-    args4 << "set" << "org.gnome.mutter" << "overlay-key" << "'SUPER_L'";
-    p4.execute("gsettings", args4);
+    
 }
 void MainWindow::updateButtons()
 {
     if(switched) {
-        groupBox->setGeometry(QRect( int(mainScreenSize.width()*96.20/100),
-                                     mainScreenSize.height() / 2 - int(mainScreenSize.height()/2.4),
-                                     int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
+
+        groupBox->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, mainScreenSize.height()-hudsize*2));
         switchButton->setIcon(QIcon(":images/screen.svg"));
-        leftGroupBox->setGeometry(QRect( 0,0, int(mainScreenSize.width() - avaibleScreenSize.width()),
-                                         int(mainScreenSize.height())));
     } else {
-        groupBox->setGeometry(QRect(0, 0, int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100)));
-        switchButton->setIcon(QIcon(":images/etapen_mode.svg"));
-        leftGroupBox->setGeometry(QRect( 500,500, 0, 0));
+
+        groupBox->setGeometry(QRect( 0,0,hudsize, mainScreenSize.height()-hudsize*2));
+        switchButton->setIcon(QIcon(":images/parduspen_mode.svg"));
     }
 
 }
@@ -329,40 +294,41 @@ void MainWindow::setPenColor(const QColor &newColor)
     palette->setColor(QPalette::Button, myPenColor);
     thickness->setStyleSheet("background:rgba(242,242,242,95);"
                              "border-radius:3px;"
+                             "border: 2px solid rgb(171,171,171);"
                              "color:"+newColor.name()+";");
     colorButton->setStyleSheet("background:"+newColor.name()+";"
                                                              "border-radius:3px;");
     penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
-                                   "background: rgba(242, 242, 242, 95);"
-                                   "border-radius: 2px;"
-                                   "width: 20px;"
-                                   "}"
+                             "background: rgb(242, 242, 242);"
+                             "border-radius: 2px;"
+                             "border: 2px solid rgb(171,171,171);"
+                             "width: 20px;"
+                             "}"
 
-                                   ".QSlider::handle:vertical {"
-                                   "background: rgba(242, 242, 242, 95);"
-                                   "border: 2px solid "+newColor.name()+";"
-                                                                        "width: 30px;"
-                                                                        "height: 40px;"
-                                                                        "border-radius: 3px;"
-                                                                        "margin: 0 -15px 0 -15px;"
-                                                                        "}");
+                             ".QSlider::handle:vertical {"
+                             "background: rgb(242, 242, 242);"
+                             "border: 2px solid "+newColor.name()+";"
+                             "width: 30px;"
+                             "height: 40px;"
+                             "border-radius: 3px;"
+                             "margin: 0 -15px 0 -15px;"
+                             "}");
 }
 
 void MainWindow::setPenSize(int size)
 {
     if (clearMode) {
-        int t = size * 20;
+        int t = size*10;
         this->myPenWidth = t;
-        thickness->setText(QString::number(t));
+        thickness->setText(QString::number(t/10));
         this->setCursor(QCursor(QPixmap(":images/eraser_cursor.svg").
                                 scaled(myPenWidth,myPenWidth,
                                        Qt::KeepAspectRatio,
                                        Qt::SmoothTransformation),
                                 myPenWidth/2,myPenWidth/2));
-    } else {
-        int t = size * 2 - 1;
-        this->myPenWidth = t;
-        thickness->setText(QString::number(t));
+    } else {;
+        this->myPenWidth = size;
+        thickness->setText(QString::number(size));
     }
 
 }
@@ -401,7 +367,7 @@ void MainWindow::penColor()
     if(switched) {
         switchScreen();
     }
-    QColor newColor = QColorDialog::getColor(myPenColor, nullptr, "Renk Seçiniz", QColorDialog::DontUseNativeDialog);
+    QColor newColor = QColorDialog::getColor(myPenColor);
     if (newColor.isValid()) {
         setPenColor(newColor);
     }
@@ -434,9 +400,7 @@ void MainWindow::switchScreen()
     }
 
     if(switched) {
-        this->setGeometry(mainScreenSize.x() + currentGeometry.width() - int(mainScreenSize.width()*3.805/100),
-                          mainScreenSize.y() + currentGeometry.height()/2 - int(mainScreenSize.height()/2.4),
-                          int(mainScreenSize.width()*3.5831/100), int(mainScreenSize.width()*32.9/100));
+        this->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, hudsize*1.9));
         switched = false;
         this->updateButtons();
     } else {
@@ -470,7 +434,7 @@ void MainWindow::toggleClearMode()
         previousEraserLevel = penSizeSelector->value();
         penSizeSelector->setValue(previousPenLevel);
         setPenSize(previousPenLevel);
-        this->setCursor(Qt::BlankCursor);
+        this->setCursor(QCursor());
         eraseButton->setIcon(QIcon(":images/eraser.svg"));
         eraseButton->setChecked(false);
     } else {
