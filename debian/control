@@ -1,10 +1,10 @@
 Source: pardus-pen
-Section: utils
+Section: education
 Priority: optional
-Maintainer: Hikmet Baş <hikmet.bas@pardus.org.tr>
+Maintainer: Ali Rıza Keskin <ali.riza.keskin@pardus.org.tr>
 Build-Depends: debhelper (>= 9), qtbase5-dev
 Standards-Version: 3.9.6
-Homepage: http://pardus.org.tr
+Homepage: https://www.pardus.org.tr
 
 Package: pardus-pen
 Architecture: amd64
