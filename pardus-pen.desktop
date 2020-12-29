@@ -8,6 +8,6 @@ Comment[tr]=Ekran Çizim Aracı
 Terminal=false
 Exec=/usr/bin/pardus-pen
 Icon=/usr/share/pardus/pardus-pen/parduspen.svg
-Categories=Qt;Graphics;
+Categories=Qt;Education;
 GenericName=Screen Drawing Tool
 GenericName[tr]=Ekran Çizim Aracı
