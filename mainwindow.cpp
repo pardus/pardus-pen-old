@@ -182,7 +182,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     switched = true;
     this->updateButtons();
-    this->setCursor(QCursor());
+    this->setCursor(QCursor(QPixmap(":images/cursor.svg")));
 }
 
 MainWindow::~MainWindow()
@@ -327,6 +327,7 @@ void MainWindow::setPenSize(int size)
                                        Qt::SmoothTransformation),
                                 myPenWidth/2,myPenWidth/2));
     } else {;
+        this->setCursor(QCursor(QPixmap(":images/cursor.svg")));
         this->myPenWidth = size;
         thickness->setText(QString::number(size));
     }
@@ -437,6 +438,7 @@ void MainWindow::toggleClearMode()
         this->setCursor(QCursor());
         eraseButton->setIcon(QIcon(":images/eraser.svg"));
         eraseButton->setChecked(false);
+        this->setCursor(QCursor(QPixmap(":images/cursor.svg")));
     } else {
         clearMode = true;
         previousPenLevel = penSizeSelector->value();
