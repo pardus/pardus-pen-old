@@ -22,14 +22,13 @@
 #include "singleinstance.h"
 #include <QApplication>
 
-#define SINGLE_INSTANCE ".parduspen"
-#define ICONPATH "/usr/share/pardus/pardus-pen/parduspen.svg"
+#define SINGLE_INSTANCE ".pardus-pen"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     //a.setOverrideCursor(QCursor(Qt::BlankCursor));
-    QApplication::setWindowIcon( QIcon(ICONPATH) );
+    QApplication::setWindowIcon( QIcon(":/images/pardus-pen.svg") );
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QString name = SINGLE_INSTANCE;
 

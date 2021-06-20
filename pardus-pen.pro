@@ -17,8 +17,8 @@ target.path = /usr/bin/
 desktop_file.files = pardus-pen.desktop
 desktop_file.path = /usr/share/applications/
 
-icon.files = images/parduspen.svg
-icon.path = /usr/share/pardus/pardus-pen
+icon.files = images/pardus-pen.svg
+icon.path = /usr/share/icons/hicolor/scalable/apps
 
 INSTALLS += target desktop_file icon
 
