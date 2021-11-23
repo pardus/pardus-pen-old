@@ -39,6 +39,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QProcess>
+#include <ctime>
 
 #include "mainwindow.h"
 
@@ -371,7 +372,19 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 
 void MainWindow::screenshot()
 {
-    system("mkdir -p pardus-pen/ && scrot \"pardus-pen/$(date +%Y-%m-%d_%H-%M-%S.png)\"");
+    // Thanks to Bayram Karahan
+    time_t now = time(0);
+    system("mkdir -p pardus-pen");
+    image.save(QDir::homePath()+"/pardus-pen/"+ctime(&now)+".png");
+    QMessageBox messageBox;
+    Qt::WindowFlags flags = 0;
+    flags |= Qt::Dialog;
+    flags |= Qt::X11BypassWindowManagerHint;
+    messageBox.setWindowFlags(flags);
+    messageBox.setText("Info");
+    messageBox.setInformativeText("Screenshot saved");
+    messageBox.setIcon(QMessageBox::Information);
+    messageBox.exec();
 }
 
 void MainWindow::penColor()
