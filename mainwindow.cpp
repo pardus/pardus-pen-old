@@ -39,7 +39,11 @@
 #include <QSlider>
 #include <QLabel>
 #include <QProcess>
+
 #include <ctime>
+#include <iostream>
+#include <sys/stat.h>
+
 
 #include "mainwindow.h"
 
@@ -374,8 +378,18 @@ void MainWindow::screenshot()
 {
     // Thanks to Bayram Karahan
     time_t now = time(0);
-    system("mkdir -p pardus-pen");
-    image.save(QDir::homePath()+"/pardus-pen/"+ctime(&now)+".png");
+
+    QString pictures = QStandardPaths::displayName(QStandardPaths::PicturesLocation);
+    mkdir(pictures.toStdString().c_str(), 0755);
+    QString imgname = QDir::homePath()+"/"+pictures.toStdString().c_str()+"/"+ctime(&now)+".png";
+    if(paperMode){
+        image.save(imgname.toStdString().c_str());
+    }else{
+        char *cmd = (char*)malloc(1024*sizeof(char));
+        strcpy(cmd,"scrot ");
+        strcat(cmd,imgname.toStdString().c_str());
+        system(cmd);;
+    }
     QMessageBox messageBox;
     Qt::WindowFlags flags = 0;
     flags |= Qt::Dialog;
