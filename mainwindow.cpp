@@ -379,15 +379,15 @@ void MainWindow::screenshot()
     // Thanks to Bayram Karahan
     time_t now = time(0);
 
-    QString pictures = QStandardPaths::displayName(QStandardPaths::PicturesLocation);
-    mkdir(pictures.toStdString().c_str(), 0755);
-    QString imgname = QDir::homePath()+"/"+pictures.toStdString().c_str()+"/"+ctime(&now)+".png";
+    mkdir("pardus-pen", 0755);
+    QString imgname = QDir::homePath()+"/pardus-pen/"+ctime(&now)+".png";
     if(paperMode){
         image.save(imgname.toStdString().c_str());
     }else{
         char *cmd = (char*)malloc(1024*sizeof(char));
-        strcpy(cmd,"scrot ");
+        strcpy(cmd,"scrot '");
         strcat(cmd,imgname.toStdString().c_str());
+        strcat(cmd,"'");
         system(cmd);;
     }
     QMessageBox messageBox;
