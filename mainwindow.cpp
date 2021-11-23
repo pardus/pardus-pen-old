@@ -85,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     colorButton = new QPushButton(this);
     switchButton = new QPushButton(this);
     paperButton = new QPushButton(this);
+    scrotButton = new QPushButton(this);
     penSizeSelector = new QSlider(Qt::Vertical, this);
     thickness = new QLabel(this);
 
@@ -132,11 +133,13 @@ MainWindow::MainWindow(QWidget *parent)
     closeButton->setIcon(QIcon(":images/close.svg"));
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
+    scrotButton->setIcon(QIcon(":images/screenshot.svg"));
     eraseButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     clearButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     closeButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     switchButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     paperButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    scrotButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
@@ -165,7 +168,9 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(thickness);
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
+    verticalLayout->addWidget(scrotButton);
     verticalLayout->addWidget(paperButton);
+
 
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("border: None;");
@@ -173,6 +178,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
+    connect(scrotButton,SIGNAL(clicked()),this,SLOT(screenshot()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
     connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
@@ -361,6 +367,11 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 
     update();
     paperMode = !paperMode;
+}
+
+void MainWindow::screenshot()
+{
+    system("mkdir -p pardus-pen/ && scrot \"pardus-pen/$(date +%Y-%m-%d_%H-%M-%S.png)\"");
 }
 
 void MainWindow::penColor()
