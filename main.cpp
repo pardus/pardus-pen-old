@@ -22,6 +22,7 @@
 #include "singleinstance.h"
 #include <QApplication>
 
+
 #define SINGLE_INSTANCE ".pardus-pen"
 
 int main(int argc, char *argv[])

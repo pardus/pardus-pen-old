@@ -45,6 +45,11 @@
 #include <sys/stat.h>
 
 
+#include <libintl.h>
+#include <locale.h>
+#define _(STRING) gettext(STRING)
+
+
 #include "mainwindow.h"
 
 int hudsize=100;
@@ -55,6 +60,10 @@ MainWindow::MainWindow(QWidget *parent)
       paperMode(false),
       drawing(false)
 {
+    setlocale (LC_ALL, "");
+    bindtextdomain ("pardus-pen", "/usr/share/locale/");
+    textdomain ("pardus-pen");
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
                    | Qt::X11BypassWindowManagerHint);
 
@@ -395,8 +404,11 @@ void MainWindow::screenshot()
     flags |= Qt::Dialog;
     flags |= Qt::X11BypassWindowManagerHint;
     messageBox.setWindowFlags(flags);
-    messageBox.setText("Info");
-    messageBox.setInformativeText("Screenshot saved");
+    messageBox.setText(_("Info"));
+    char *msg = (char*)malloc(1024*sizeof(char));
+    strcpy(msg,_("Screenshot saved:"));
+    strcat(msg,imgname.toStdString().c_str());
+    messageBox.setInformativeText(msg);
     messageBox.setIcon(QMessageBox::Information);
     messageBox.exec();
 }
