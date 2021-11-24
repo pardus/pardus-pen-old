@@ -388,15 +388,11 @@ void MainWindow::screenshot()
 {
     // Thanks to Bayram Karahan
  time_t rawtime;
-    struct tm * timeinfo;
-    char buffer [80];
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    strftime (buffer,80,"%F-%T",timeinfo);
-
-    mkdir("pardus-pen", 0755);
     QString pics = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString imgname = pics+"/"+buffer+".png";
+    time_t now = time(0);
+    QDateTime time = QDateTime::currentDateTime();
+
+    QString imgname = pics + "/" + time.toString("yyyy-MM-dd_hh-mm-ss") + ".png";
     if(paperMode){
         image.save(imgname.toStdString().c_str());
     }else{
