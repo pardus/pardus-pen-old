@@ -39,6 +39,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QProcess>
+#include <QStandardPaths>
 
 #include <ctime>
 #include <iostream>
@@ -394,7 +395,8 @@ void MainWindow::screenshot()
     strftime (buffer,80,"%F-%T",timeinfo);
 
     mkdir("pardus-pen", 0755);
-    QString imgname = QDir::homePath()+"/pardus-pen/"+buffer+".png";
+    QString pics = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString imgname = pics+"/"+buffer+".png";
     if(paperMode){
         image.save(imgname.toStdString().c_str());
     }else{
@@ -402,7 +404,7 @@ void MainWindow::screenshot()
         strcpy(cmd,"scrot '");
         strcat(cmd,imgname.toStdString().c_str());
         strcat(cmd,"'");
-        system(cmd);;
+        system(cmd);
     }
     QMessageBox messageBox;
     Qt::WindowFlags flags = 0;
