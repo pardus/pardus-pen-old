@@ -1,3 +1,20 @@
+pardus-pen (1.2.0) unstable; urgency=medium
+
+  [ Ali Riza KESKIN ]
+  * screenshot with scrot
+  * scrot dependency
+  * screenshot dialog added. method changed
+  * scrot used non-paper mode
+  * scrot f,x
+  * translation & border screenshot icon
+  * ui fixes and filename format changed
+  * pictures directory adaptation
+  * time format from qt
+  * clean
+  * Add missing file
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Wed, 24 Nov 2021 12:10:43 +0300
+
 pardus-pen (1.1.0) unstable; urgency=medium
 
   [ Ali Rıza KESKİN ]
