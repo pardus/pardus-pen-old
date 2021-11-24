@@ -40,6 +40,7 @@
 #include <QLabel>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QDateTime>
 
 #include <ctime>
 #include <iostream>
@@ -387,9 +388,7 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 void MainWindow::screenshot()
 {
     // Thanks to Bayram Karahan
- time_t rawtime;
     QString pics = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    time_t now = time(0);
     QDateTime time = QDateTime::currentDateTime();
 
     QString imgname = pics + "/" + time.toString("yyyy-MM-dd_hh-mm-ss") + ".png";
