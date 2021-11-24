@@ -386,10 +386,15 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 void MainWindow::screenshot()
 {
     // Thanks to Bayram Karahan
-    time_t now = time(0);
+ time_t rawtime;
+    struct tm * timeinfo;
+    char buffer [80];
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    strftime (buffer,80,"%F-%T",timeinfo);
 
     mkdir("pardus-pen", 0755);
-    QString imgname = QDir::homePath()+"/pardus-pen/"+ctime(&now)+".png";
+    QString imgname = QDir::homePath()+"/pardus-pen/"+buffer+".png";
     if(paperMode){
         image.save(imgname.toStdString().c_str());
     }else{
@@ -407,6 +412,7 @@ void MainWindow::screenshot()
     messageBox.setText(_("Info"));
     char *msg = (char*)malloc(1024*sizeof(char));
     strcpy(msg,_("Screenshot saved:"));
+    strcat(msg,"\n");
     strcat(msg,imgname.toStdString().c_str());
     messageBox.setInformativeText(msg);
     messageBox.setIcon(QMessageBox::Information);
