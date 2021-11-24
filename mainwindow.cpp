@@ -39,6 +39,18 @@
 #include <QSlider>
 #include <QLabel>
 #include <QProcess>
+#include <QStandardPaths>
+#include <QDateTime>
+
+#include <ctime>
+#include <iostream>
+#include <sys/stat.h>
+
+
+#include <libintl.h>
+#include <locale.h>
+#define _(STRING) gettext(STRING)
+
 
 #include "mainwindow.h"
 
@@ -50,6 +62,10 @@ MainWindow::MainWindow(QWidget *parent)
       paperMode(false),
       drawing(false)
 {
+    setlocale (LC_ALL, "");
+    bindtextdomain ("pardus-pen", "/usr/share/locale/");
+    textdomain ("pardus-pen");
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
                    | Qt::X11BypassWindowManagerHint);
 
@@ -85,6 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
     colorButton = new QPushButton(this);
     switchButton = new QPushButton(this);
     paperButton = new QPushButton(this);
+    scrotButton = new QPushButton(this);
     penSizeSelector = new QSlider(Qt::Vertical, this);
     thickness = new QLabel(this);
 
@@ -132,11 +149,13 @@ MainWindow::MainWindow(QWidget *parent)
     closeButton->setIcon(QIcon(":images/close.svg"));
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
+    scrotButton->setIcon(QIcon(":images/screenshot.svg"));
     eraseButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     clearButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     closeButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     switchButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     paperButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    scrotButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
@@ -165,7 +184,9 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(thickness);
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
+    verticalLayout->addWidget(scrotButton);
     verticalLayout->addWidget(paperButton);
+
 
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("border: None;");
@@ -173,6 +194,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
+    connect(scrotButton,SIGNAL(clicked()),this,SLOT(screenshot()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
     connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
@@ -361,6 +383,37 @@ void MainWindow::setPaperMode(QImage *myimage, QImage *mypreviousImage)
 
     update();
     paperMode = !paperMode;
+}
+
+void MainWindow::screenshot()
+{
+    // Thanks to Bayram Karahan
+    QString pics = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QDateTime time = QDateTime::currentDateTime();
+
+    QString imgname = pics + "/" + time.toString("yyyy-MM-dd_hh-mm-ss") + ".png";
+    if(paperMode){
+        image.save(imgname.toStdString().c_str());
+    }else{
+        char *cmd = (char*)malloc(1024*sizeof(char));
+        strcpy(cmd,"scrot '");
+        strcat(cmd,imgname.toStdString().c_str());
+        strcat(cmd,"'");
+        system(cmd);
+    }
+    QMessageBox messageBox;
+    Qt::WindowFlags flags = 0;
+    flags |= Qt::Dialog;
+    flags |= Qt::X11BypassWindowManagerHint;
+    messageBox.setWindowFlags(flags);
+    messageBox.setText(_("Info"));
+    char *msg = (char*)malloc(1024*sizeof(char));
+    strcpy(msg,_("Screenshot saved:"));
+    strcat(msg,"\n");
+    strcat(msg,imgname.toStdString().c_str());
+    messageBox.setInformativeText(msg);
+    messageBox.setIcon(QMessageBox::Information);
+    messageBox.exec();
 }
 
 void MainWindow::penColor()

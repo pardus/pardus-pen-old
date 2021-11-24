@@ -8,6 +8,6 @@ Homepage: https://www.pardus.org.tr
 
 Package: pardus-pen
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5svg5
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5svg5, scrot
 Description: Pardus Sanal Kalem
  Ekrana çizim yapmak için rahat kullanımlı, hızlı bir araç.

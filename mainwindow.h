@@ -56,6 +56,7 @@ public slots:
     void toggleClearMode();
     void penSize(const int &size);
     void togglePaperMode();
+    void screenshot();
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -99,6 +100,7 @@ private:
     QPushButton *colorButton;
     QPushButton *switchButton;
     QPushButton *paperButton;
+    QPushButton *scrotButton;
     QPushButton *pardusButton;
     QPushButton *etapButton;
     QPalette *palette;

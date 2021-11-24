@@ -20,7 +20,17 @@ desktop_file.path = /usr/share/applications/
 icon.files = images/pardus-pen.svg
 icon.path = /usr/share/icons/hicolor/scalable/apps
 
-INSTALLS += target desktop_file icon
+buildmo.target = po
+buildmo.path = /usr/share/locale/pardus-pen/
+buildmo.commands = make -C po 
+
+
+installmo.target = po
+installmo.path = /usr/share/locale/pardus-pen/
+installmo.commands = make -C po install
+
+
+INSTALLS += target desktop_file icon buildmo installmo
 
 DISTFILES += \
     sliderstyle.qss
