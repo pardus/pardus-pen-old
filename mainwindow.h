@@ -57,6 +57,7 @@ public slots:
     void penSize(const int &size);
     void togglePaperMode();
     void screenshot();
+    void record();
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -83,6 +84,8 @@ private:
     int previousEraserLevel;
     int previousPenLevel;
     int myPenWidth;
+    bool isFfmpegActive;
+    std::string recordName;
     QImage image;
     QImage previousImage;
     QImage paper;
@@ -101,6 +104,7 @@ private:
     QPushButton *switchButton;
     QPushButton *paperButton;
     QPushButton *scrotButton;
+    QPushButton *recordButton;
     QPushButton *pardusButton;
     QPushButton *etapButton;
     QPalette *palette;
@@ -111,7 +115,6 @@ private:
     QSlider *penSizeSelector;
     QLabel *thickness;
     QLabel *leftTextLabel;
-
 };
 
 #endif // MAINWINDOW_H

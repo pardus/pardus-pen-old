@@ -45,7 +45,7 @@
 #include <ctime>
 #include <iostream>
 #include <sys/stat.h>
-
+#include <signal.h>
 
 #include <libintl.h>
 #include <locale.h>
@@ -102,8 +102,10 @@ MainWindow::MainWindow(QWidget *parent)
     switchButton = new QPushButton(this);
     paperButton = new QPushButton(this);
     scrotButton = new QPushButton(this);
+    recordButton = new QPushButton(this);
     penSizeSelector = new QSlider(Qt::Vertical, this);
     thickness = new QLabel(this);
+    isFfmpegActive = false;
 
     colorButton->setStyleSheet("background:rgb(255,108,0);"
                                "border-radius:3px;"
@@ -150,12 +152,14 @@ MainWindow::MainWindow(QWidget *parent)
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
     scrotButton->setIcon(QIcon(":images/screenshot.svg"));
+    recordButton->setIcon(QIcon(":images/record.svg"));
     eraseButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     clearButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     closeButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     switchButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     paperButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     scrotButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    recordButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
@@ -185,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
     verticalLayout->addWidget(scrotButton);
+    verticalLayout->addWidget(recordButton);
     verticalLayout->addWidget(paperButton);
 
 
@@ -195,6 +200,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(scrotButton,SIGNAL(clicked()),this,SLOT(screenshot()));
+    connect(recordButton,SIGNAL(clicked()),this,SLOT(record()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
     connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
@@ -414,6 +420,45 @@ void MainWindow::screenshot()
     messageBox.setInformativeText(msg);
     messageBox.setIcon(QMessageBox::Information);
     messageBox.exec();
+}
+
+void MainWindow::record()
+{
+    if(this->isFfmpegActive) {
+        int res = system("killall ffmpeg");
+        if(res != 0) {
+            std::cerr << "Error: killall ffmpeg exited with " << res << std::endl;
+            exit(-1);
+        }
+        this->isFfmpegActive = false;
+        QMessageBox messageBox;
+        Qt::WindowFlags flags = 0;
+        flags |= Qt::Dialog;
+        flags |= Qt::X11BypassWindowManagerHint;
+        messageBox.setWindowFlags(flags);
+        messageBox.setText(_("Info"));
+        char *msg = (char*)malloc(1024*sizeof(char));
+        strcpy(msg,_("Record saved:"));
+        strcat(msg,"\n");
+        strcat(msg,this->recordName.c_str());
+        messageBox.setInformativeText(msg);
+        messageBox.setIcon(QMessageBox::Information);
+        messageBox.exec();
+        this->recordName = "";
+        this->recordButton->setIcon(QIcon(":images/record.svg"));
+        return;
+    }
+    QDateTime time = QDateTime::currentDateTime();
+    QString videos = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    this->recordName = videos.toStdString()+"/"+time.toString("yyyy-MM-dd_hh-mm-ss").toStdString() + ".mp4";
+    std::string command = "ffmpeg -f x11grab -r 30 -i :0.0 -c:v libx264 -crf 0 -preset  ultrafast "+this->recordName+" &";
+    int result = system(command.c_str());
+    if(result != 0) {
+        std::cerr << "Error: ffmpeg exited with " << result << std::endl;
+    }else {
+        this->isFfmpegActive = true;
+        this->recordButton->setIcon(QIcon(":images/recording.svg"));
+    }
 }
 
 void MainWindow::penColor()

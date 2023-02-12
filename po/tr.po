@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-18 06:43+0000\n"
-"PO-Revision-Date: 2021-06-04 15:58+0000\n"
+"POT-Creation-Date: 2023-02-12 16:13+0300\n"
+"PO-Revision-Date: 2023-02-12 16:14+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -18,10 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: mainwindow.cpp:406
+#: mainwindow.cpp:414 mainwindow.cpp:439
 msgid "Info"
 msgstr "Bilgi"
 
-#: mainwindow.cpp:408
+#: mainwindow.cpp:441
+msgid "Record saved:"
+msgstr "Video kaydedildi:"
+
+#: mainwindow.cpp:417
 msgid "Screenshot saved:"
 msgstr "Ekran görüntüsü kaydedildi:"
