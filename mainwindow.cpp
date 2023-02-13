@@ -220,21 +220,20 @@ MainWindow::~MainWindow()
 void MainWindow::updateButtons()
 {
     if(switched) {
-
         groupBox->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, mainScreenSize.height()-hudsize*2));
+        this->setCursor(QCursor(QPixmap(":images/cursor.svg")));
         switchButton->setIcon(QIcon(":images/screen.svg"));
     } else {
-
         groupBox->setGeometry(QRect( 0,0,hudsize, mainScreenSize.height()-hudsize*2));
+        this->unsetCursor();
         switchButton->setIcon(QIcon(":images/parduspen_mode.svg"));
     }
-
 }
 
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && switched) {
         lastPoint = event->pos();
         drawing = true;
     }
@@ -499,13 +498,14 @@ void MainWindow::switchScreen()
     }
 
     if(switched) {
-        this->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, hudsize*1.9));
         switched = false;
-        this->updateButtons();
+        previousImage = image;
+        image = QImage(0, 0, QImage::Format_RGBA64);
+        this->setGeometry(QRect(mainScreenSize.width()-hudsize, hudsize, groupBox->geometry().width(), switchButton->y()+switchButton->height()));
     } else {
-        this->setGeometry(mainScreenSize);
         switched = true;
-        this->updateButtons();
+        image = previousImage;
+        this->setGeometry(mainScreenSize);
     }
 }
 
