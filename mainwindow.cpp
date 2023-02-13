@@ -46,6 +46,9 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
 #include <libintl.h>
 #include <locale.h>
@@ -77,8 +80,9 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->setAlignment(Qt::AlignCenter);
 
     QDesktopWidget widget;
-    mainScreenSize = widget.screenGeometry(widget.primaryScreen());
-    avaibleScreenSize = widget.availableGeometry(widget.primaryScreen());
+    primaryScreen = widget.primaryScreen();
+    mainScreenSize = widget.screenGeometry(primaryScreen);
+    avaibleScreenSize = widget.availableGeometry(primaryScreen);
 
     setGeometry(mainScreenSize);
 
@@ -105,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent)
     recordButton = new QPushButton(this);
     penSizeSelector = new QSlider(Qt::Vertical, this);
     thickness = new QLabel(this);
-    isFfmpegActive = false;
+    this->ffmpegChildPID = 0;
 
     colorButton->setStyleSheet("background:rgb(255,108,0);"
                                "border-radius:3px;"
@@ -163,7 +167,8 @@ MainWindow::MainWindow(QWidget *parent)
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
-
+    
+    
 
     palette = new QPalette();
     palette->setColor(QPalette::Button, myPenColor);
@@ -195,8 +200,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("border: None;");
-
-
 
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(scrotButton,SIGNAL(clicked()),this,SLOT(screenshot()));
@@ -423,13 +426,12 @@ void MainWindow::screenshot()
 
 void MainWindow::record()
 {
-    if(this->isFfmpegActive) {
-        int res = system("killall ffmpeg");
+    if(this->ffmpegChildPID != 0) {
+        int res = kill(this->ffmpegChildPID, 2);
         if(res != 0) {
-            std::cerr << "Error: killall ffmpeg exited with " << res << std::endl;
-            exit(-1);
+            std::cerr << "Error: kill " << this->ffmpegChildPID << " exited with " << res << " errno is " << errno << std::endl;
         }
-        this->isFfmpegActive = false;
+        this->ffmpegChildPID = 0;
         QMessageBox messageBox;
         Qt::WindowFlags flags = 0;
         flags |= Qt::Dialog;
@@ -450,12 +452,17 @@ void MainWindow::record()
     QDateTime time = QDateTime::currentDateTime();
     QString videos = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     this->recordName = videos.toStdString()+"/"+time.toString("yyyy-MM-dd_hh-mm-ss").toStdString() + ".mp4";
-    std::string command = "ffmpeg -f x11grab -r 30 -i :0.0 -c:v libx264 -crf 0 -preset  ultrafast "+this->recordName+" &";
-    int result = system(command.c_str());
-    if(result != 0) {
-        std::cerr << "Error: ffmpeg exited with " << result << std::endl;
+    pid_t pid = fork();
+    if(pid == -1) {
+        std::cerr << "Error: fork failed, errno: " << errno << std::endl;
+    }else if(pid == 0) {
+        int result = execl("/usr/bin/ffmpeg", "ffmpeg", "-f", "x11grab", "-r", "30", "-i", (":"+std::to_string(this->primaryScreen)+".0").c_str(), "-c:v", "libx264", "-crf", "0", "-preset",  "ultrafast", this->recordName.c_str(), (char*) NULL);
+        if(result != 0) {
+            std::cerr << "Error: ffmpeg exited with " << result << std::endl;
+            this->ffmpegChildPID = 0;
+        }
     }else {
-        this->isFfmpegActive = true;
+        this->ffmpegChildPID = pid;
         this->recordButton->setIcon(QIcon(":images/recording.svg"));
     }
 }

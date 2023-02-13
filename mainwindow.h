@@ -84,7 +84,8 @@ private:
     int previousEraserLevel;
     int previousPenLevel;
     int myPenWidth;
-    bool isFfmpegActive;
+    int primaryScreen;
+    pid_t ffmpegChildPID;
     std::string recordName;
     QImage image;
     QImage previousImage;
