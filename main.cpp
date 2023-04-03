@@ -27,12 +27,12 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
     //a.setOverrideCursor(QCursor(Qt::BlankCursor));
     QApplication::setWindowIcon( QIcon(":/images/pardus-pen.svg") );
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     QString name = SINGLE_INSTANCE;
 
+    QApplication a(argc, argv);
     SingleInstance cInstance;
     if(cInstance.hasPrevious(name, QCoreApplication::arguments()))
     {
