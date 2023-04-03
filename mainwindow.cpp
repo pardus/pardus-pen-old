@@ -45,7 +45,10 @@
 #include <ctime>
 #include <iostream>
 #include <sys/stat.h>
-
+#include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
 #include <libintl.h>
 #include <locale.h>
@@ -77,8 +80,9 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->setAlignment(Qt::AlignCenter);
 
     QDesktopWidget widget;
-    mainScreenSize = widget.screenGeometry(widget.primaryScreen());
-    avaibleScreenSize = widget.availableGeometry(widget.primaryScreen());
+    primaryScreen = widget.primaryScreen();
+    mainScreenSize = widget.screenGeometry(primaryScreen);
+    avaibleScreenSize = widget.availableGeometry(primaryScreen);
 
     setGeometry(mainScreenSize);
 
@@ -102,8 +106,10 @@ MainWindow::MainWindow(QWidget *parent)
     switchButton = new QPushButton(this);
     paperButton = new QPushButton(this);
     scrotButton = new QPushButton(this);
+    recordButton = new QPushButton(this);
     penSizeSelector = new QSlider(Qt::Vertical, this);
     thickness = new QLabel(this);
+    this->ffmpegChildPID = 0;
 
     colorButton->setStyleSheet("background:rgb(255,108,0);"
                                "border-radius:3px;"
@@ -150,16 +156,19 @@ MainWindow::MainWindow(QWidget *parent)
     switchButton->setIcon(QIcon(":images/screen.svg"));
     paperButton->setIcon(QIcon(":images/paper.svg"));
     scrotButton->setIcon(QIcon(":images/screenshot.svg"));
+    recordButton->setIcon(QIcon(":images/record.svg"));
     eraseButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     clearButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     closeButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     switchButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     paperButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     scrotButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
+    recordButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
-
+    
+    
 
     palette = new QPalette();
     palette->setColor(QPalette::Button, myPenColor);
@@ -185,16 +194,16 @@ MainWindow::MainWindow(QWidget *parent)
     verticalLayout->addWidget(eraseButton);
     verticalLayout->addWidget(clearButton);
     verticalLayout->addWidget(scrotButton);
+    verticalLayout->addWidget(recordButton);
     verticalLayout->addWidget(paperButton);
 
 
     groupBox->setLayout(verticalLayout);
     groupBox->setStyleSheet("border: None;");
 
-
-
     connect(eraseButton,SIGNAL(clicked()),this,SLOT(toggleClearMode()));
     connect(scrotButton,SIGNAL(clicked()),this,SLOT(screenshot()));
+    connect(recordButton,SIGNAL(clicked()),this,SLOT(record()));
     connect(penSizeSelector,SIGNAL(valueChanged(int)),this,SLOT(penSize(int)));
     connect(clearButton,SIGNAL(clicked()),this,SLOT(clearImage()));
     connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
@@ -214,21 +223,20 @@ MainWindow::~MainWindow()
 void MainWindow::updateButtons()
 {
     if(switched) {
-
         groupBox->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, mainScreenSize.height()-hudsize*2));
+        this->setCursor(QCursor(QPixmap(":images/cursor.svg")));
         switchButton->setIcon(QIcon(":images/screen.svg"));
     } else {
-
         groupBox->setGeometry(QRect( 0,0,hudsize, mainScreenSize.height()-hudsize*2));
+        this->unsetCursor();
         switchButton->setIcon(QIcon(":images/parduspen_mode.svg"));
     }
-
 }
 
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && switched) {
         lastPoint = event->pos();
         drawing = true;
     }
@@ -416,6 +424,49 @@ void MainWindow::screenshot()
     messageBox.exec();
 }
 
+void MainWindow::record()
+{
+    if(this->ffmpegChildPID != 0) {
+        int res = kill(this->ffmpegChildPID, 2);
+        if(res != 0) {
+            std::cerr << "Error: kill " << this->ffmpegChildPID << " exited with " << res << " errno is " << errno << std::endl;
+        }
+        this->ffmpegChildPID = 0;
+        QMessageBox messageBox;
+        Qt::WindowFlags flags = 0;
+        flags |= Qt::Dialog;
+        flags |= Qt::X11BypassWindowManagerHint;
+        messageBox.setWindowFlags(flags);
+        messageBox.setText(_("Info"));
+        char *msg = (char*)malloc(1024*sizeof(char));
+        strcpy(msg,_("Record saved:"));
+        strcat(msg,"\n");
+        strcat(msg,this->recordName.c_str());
+        messageBox.setInformativeText(msg);
+        messageBox.setIcon(QMessageBox::Information);
+        messageBox.exec();
+        this->recordName = "";
+        this->recordButton->setIcon(QIcon(":images/record.svg"));
+        return;
+    }
+    QDateTime time = QDateTime::currentDateTime();
+    QString videos = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    this->recordName = videos.toStdString()+"/"+time.toString("yyyy-MM-dd_hh-mm-ss").toStdString() + ".mp4";
+    pid_t pid = fork();
+    if(pid == -1) {
+        std::cerr << "Error: fork failed, errno: " << errno << std::endl;
+    }else if(pid == 0) {
+        int result = execl("/usr/bin/ffmpeg", "ffmpeg", "-f", "x11grab", "-r", "30", "-i", (":"+std::to_string(this->primaryScreen)+".0").c_str(), "-c:v", "libx264", "-crf", "0", "-preset",  "ultrafast", this->recordName.c_str(), (char*) NULL);
+        if(result != 0) {
+            std::cerr << "Error: ffmpeg exited with " << result << std::endl;
+            this->ffmpegChildPID = 0;
+        }
+    }else {
+        this->ffmpegChildPID = pid;
+        this->recordButton->setIcon(QIcon(":images/recording.svg"));
+    }
+}
+
 void MainWindow::penColor()
 {
     if(switched) {
@@ -454,13 +505,14 @@ void MainWindow::switchScreen()
     }
 
     if(switched) {
-        this->setGeometry(QRect( mainScreenSize.width()-hudsize,hudsize,hudsize, hudsize*1.9));
         switched = false;
-        this->updateButtons();
+        previousImage = image;
+        image = QImage(0, 0, QImage::Format_RGBA64);
+        this->setGeometry(QRect(mainScreenSize.width()-hudsize, hudsize, groupBox->geometry().width(), switchButton->y()+switchButton->height()));
     } else {
-        this->setGeometry(mainScreenSize);
         switched = true;
-        this->updateButtons();
+        image = previousImage;
+        this->setGeometry(mainScreenSize);
     }
 }
 
