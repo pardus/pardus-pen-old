@@ -1,3 +1,28 @@
+pardus-pen (2.0.0) unstable; urgency=medium
+
+  [ Hugo Carvalho ]
+  * Add Portuguese translation
+  * Add Portuguese translation
+
+  [ Ömer Arda CANBOLAT ]
+  * Define the "AA_EnableHighDpiScaling" attribute just before the QApplication is created.
+  * interface: disable high-dpi scaling Disable high-dpi scaling due to an interface problem.
+
+  [ Mustafa Ekşi ]
+  * Ekran kaydetme özelliğinin eklenmesi
+  * Dokunmatik moda geçişle ilgili hata düzeltmeleri
+  * sulincix'in dediklerine göre bazı yerleri yeniden yazdım
+
+  [ Hugo Carvalho ]
+  * Update Portuguese translation
+
+  [ Fatih Altun ]
+  * Fix pen size selector height
+  * Update app icon
+  * Add X-Pardus-Apps to desktop file categories
+
+ -- Fatih Altun <fatih.altun@pardus.org.tr>  Wed, 30 Aug 2023 14:26:26 +0300
+
 pardus-pen (1.2.0) unstable; urgency=medium
 
   [ Ali Riza KESKIN ]
