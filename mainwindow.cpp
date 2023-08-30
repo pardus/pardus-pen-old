@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     penSizeSelector->setMinimum(1);
     penSizeSelector->setMaximum(31);
-    penSizeSelector->setSliderPosition(2);
+    penSizeSelector->setSliderPosition(7);
 
     penSizeSelector->setStyleSheet(".QSlider::groove:vertical {"
                                    "background: rgba(242, 242, 242,64);"
@@ -165,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent)
     scrotButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     recordButton->setIconSize(QSize(hudsize*0.64,hudsize*0.64));
     colorButton->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
-    penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*5));
+    penSizeSelector->setFixedSize(QSize(hudsize*0.64,hudsize*3.5));
     thickness->setFixedSize(QSize(hudsize*0.64,hudsize*0.64));
     
     
